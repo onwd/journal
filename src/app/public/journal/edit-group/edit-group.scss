@@ -1,0 +1,15 @@
+:host ::ng-deep .edit-group-page {
+  .form {
+    padding: 24px;
+    box-sizing: border-box;
+    width: 100%;
+
+    &-field {
+      width: 100%;
+    }
+  }
+
+  .learners-table, .subjects-table {
+    &-actions {max-width: 300px; text-align: end;}
+  }
+}

@@ -1,0 +1,30 @@
+:host ::ng-deep .journal-page {
+  .menu-spacer {flex: 1 1 auto;}
+
+  .form {
+    padding: 24px;
+    box-sizing: border-box;
+
+    &-field {
+      margin-right: 24px;
+    }
+  }
+
+  .mat-tab-body-wrapper {overflow: visible;}
+  .mat-tab-body.mat-tab-body-active {overflow: visible;}
+  .mat-tab-body-content {overflow: visible;}
+
+  .learners-table, .groups-table {
+    &-actions {max-width: 300px; text-align: end;}
+  }
+
+  .journal-table {
+    &-name {min-width: 300px;}
+    &-day {text-align: center; position: relative;}
+    .mat-select {position: absolute; top: 0; left: 0; right: 0; bottom: 0;}
+    .mat-select-trigger {width: 100%; height: 100%; transition: all 0.3s;
+      &:hover {background-color: rgba(0, 0, 0, 0.1); transition: all 0s;}
+    }
+    .mat-select-arrow-wrapper {display: none;}
+  }
+}

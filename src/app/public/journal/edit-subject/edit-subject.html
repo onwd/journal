@@ -1,0 +1,78 @@
+<div class="edit-subject-page">
+  <mat-toolbar color="primary">
+    <span>{{subject.name}}</span>
+  </mat-toolbar>
+
+  <form class="form">
+    <mat-form-field class="form-field">
+      <mat-label>Название</mat-label>
+      <input [(ngModel)]="subject.name"
+        matInput
+        name="name" />
+    </mat-form-field>
+  </form>
+
+  <div class="table lessons-table">
+    <div class="table-row table-head">
+      <div class="table-cell table-content lessons-table-year">Год</div>
+      <div class="table-cell table-content lessons-table-month">Месяц</div>
+      <div class="table-cell table-content lessons-table-day">День</div>
+      <div class="table-cell table-content lessons-table-topic">Тема занятия</div>
+      <div class="table-cell table-content lessons-table-hours">Кол-во часов, занятий</div>
+    </div>
+    <div *ngFor="let lesson of lessons" class="table-row">
+      <div class="table-cell table-content lessons-table-year">
+        <mat-select [(ngModel)]="lesson.year" name="lesson-year-{{lesson.id}}" placeholder="Год">
+          <mat-option value="19">19/20</mat-option>
+          <mat-option value="20">20/21</mat-option>
+          <mat-option value="21">21/22</mat-option>
+          <mat-option value="22">22/23</mat-option>
+          <mat-option value="23">23/24</mat-option>
+          <mat-option value="24">24/25</mat-option>
+        </mat-select>
+      </div>
+      <div class="table-cell table-content lessons-table-month">
+        <mat-select [(ngModel)]="lesson.month" name="lesson-month-{{lesson.id}}" placeholder="Месяц">
+          <mat-option value="9">Сентябрь</mat-option>
+          <mat-option value="10">Октябрь</mat-option>
+          <mat-option value="11">Ноябрь</mat-option>
+          <mat-option value="12">Декабрь</mat-option>
+          <mat-option value="1">Январь</mat-option>
+          <mat-option value="2">Февраль</mat-option>
+          <mat-option value="3">Март</mat-option>
+          <mat-option value="4">Апрель</mat-option>
+          <mat-option value="5">Май</mat-option>
+          <mat-option value="6">Июнь</mat-option>
+          <mat-option value="7">Июль</mat-option>
+          <mat-option value="8">Август</mat-option>
+        </mat-select>
+      </div>
+      <div class="table-cell table-content lessons-table-day">
+        <mat-select [(ngModel)]="lesson.day" name="lesson-day-{{lesson.id}}" placeholder="День">
+          <mat-option *ngFor="let day of days" [value]="day.toString()">{{day}}</mat-option>
+        </mat-select>
+      </div>
+      <div class="table-cell table-content lessons-table-topic">
+        <input [(ngModel)]="lesson.topic"
+          matInput
+          name="lesson-topic-{{lesson.topic}}"
+          placeholder="Введите тему занятия" />
+      </div>
+      <div class="table-cell table-content lessons-table-hours">
+        <input [(ngModel)]="lesson.hoursAndLessons"
+          matInput
+          name="lesson-hours-{{lesson.hoursAndLessons}}"
+          placeholder="Введите кол-во часов, занятий" />
+      </div>
+      <div class="table-cell table-content lessons-table-actions">
+        <button (click)="$event.stopPropagation(); deleteLesson(lesson)" mat-flat-button color="warn">Удалить</button>
+      </div>
+    </div>
+    <div (click)="createLesson()" class="table-row table-footer" matRipple>
+      <div class="table-cell table-content">
+        <mat-icon>add</mat-icon>
+        Добавить занятие
+      </div>
+    </div>
+  </div>
+</div>

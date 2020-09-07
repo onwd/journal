@@ -1,0 +1,59 @@
+<div class="edit-learner-page">
+  <mat-toolbar color="primary">
+    <span>{{learner.name}}</span>
+  </mat-toolbar>
+
+  <form class="form">
+    <mat-form-field class="form-field">
+      <mat-label>ФИО</mat-label>
+      <input [(ngModel)]="learner.name"
+        matInput
+        name="name" />
+    </mat-form-field>
+
+    <mat-form-field class="form-field">
+      <mat-label>Пол</mat-label>
+      <mat-select [(ngModel)]="learner.gender" name="gender">
+        <mat-option value="male">Мужской</mat-option>
+        <mat-option value="female">Женский</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="form-field">
+      <mat-label>Дата рождения</mat-label>
+      <input [(ngModel)]="learner.birthDate"
+        matInput
+        name="birthDate" />
+    </mat-form-field>
+
+    <mat-form-field class="form-field">
+      <mat-label>Номер личного дела</mat-label>
+      <input [(ngModel)]="learner.personalFileNumber"
+        matInput
+        name="personalFileNumber" />
+    </mat-form-field>
+
+    <mat-form-field class="form-field">
+      <mat-label>Домашний адрес, телефон</mat-label>
+      <textarea [(ngModel)]="learner.address"
+        matInput
+        name="address"></textarea>
+    </mat-form-field>
+
+    <mat-form-field class="form-field">
+      <mat-label>ФИО родителей</mat-label>
+      <textarea [(ngModel)]="learner.parentsName"
+        matInput
+        name="parentsName"></textarea>
+    </mat-form-field>
+
+    <mat-form-field class="form-field">
+      <mat-label>Место работы родителей, занимаемая должность, телефон</mat-label>
+      <textarea [(ngModel)]="learner.parentsInfo"
+        matInput
+        name="parentsInfo"></textarea>
+    </mat-form-field>
+  </form>
+</div>
+
+

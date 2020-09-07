@@ -1,0 +1,22 @@
+:host ::ng-deep .edit-subject-page {
+  .form {
+    padding: 24px;
+    box-sizing: border-box;
+    width: 100%;
+
+    &-field {
+      width: 100%;
+    }
+  }
+
+  .mat-tab-body-wrapper {overflow: visible;}
+  .mat-tab-body.mat-tab-body-active {overflow: visible;}
+  .mat-tab-body-content {overflow: visible;}
+
+  .lessons-table {
+    &-year {max-width: 100px;}
+    &-month {max-width: 150px;}
+    &-day {max-width: 100px;}
+    &-actions {max-width: 300px; text-align: end;}
+  }
+}

@@ -1,0 +1,11 @@
+:host ::ng-deep .edit-learner-page {
+  .form {
+    padding: 24px;
+    box-sizing: border-box;
+    width: 100%;
+
+    &-field {
+      width: 100%;
+    }
+  }
+}

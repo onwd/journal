@@ -1,0 +1,68 @@
+<div class="edit-group-page">
+  <mat-toolbar color="primary">
+    <span>{{group.name}}</span>
+  </mat-toolbar>
+
+  <form class="form">
+    <mat-form-field class="form-field">
+      <mat-label>Название</mat-label>
+      <input [(ngModel)]="group.name"
+        matInput
+        name="name" />
+    </mat-form-field>
+  </form>
+
+  <div class="table subjects-table">
+    <div class="table-row table-head">
+      <div class="table-cell table-content">Предметы</div>
+    </div>
+    <div *ngFor="let subject of subjects"
+      [routerLink]="['/journal/groups', group.id, 'subjects', subject.id]"
+      matRipple
+      class="table-row">
+      <div class="table-cell table-content subjects-table-name">{{subject.name || '&nbsp;'}}</div>
+      <div class="table-cell table-content subjects-table-actions">
+        <button (click)="$event.stopPropagation(); deleteSubject(subject)" mat-flat-button color="warn">Удалить</button>
+      </div>
+    </div>
+    <div (click)="createSubject()"
+      matRipple
+      class="table-row table-footer">
+      <div class="table-cell table-content">
+        <mat-icon>add</mat-icon>
+        Добавить предмет
+      </div>
+    </div>
+  </div>
+
+  <div class="table learners-table">
+    <div class="table-row table-head">
+      <div class="table-cell table-content">Обучающиеся</div>
+    </div>
+    <div *ngFor="let learnerId of group.learnersIds" class="table-row">
+      <div class="table-cell table-content">
+        {{getLearnerById(learnerId).name || '&nbsp;'}}
+      </div>
+      <div class="table-cell table-content learners-table-actions">
+        <button (click)="$event.stopPropagation(); deleteLearner(learnerId)" mat-flat-button color="warn">Удалить</button>
+      </div>
+    </div>
+    <div *ngIf="selectableLearners.length > 0" class="table-row table-footer">
+      <div class="table-cell table-content">
+        <mat-form-field style="width: 100%">
+          <input type="text"
+            placeholder="Добавить обучающегося"
+            matInput
+            [formControl]="addLearnerControl"
+            [matAutocomplete]="auto"
+            #addLearnerInput>
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onLearnerSelected($event)">
+            <mat-option *ngFor="let learnerOption of learnerOptions | async" [value]="learnerOption.id">
+              {{learnerOption.name}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+</div>
