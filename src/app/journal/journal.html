@@ -13,132 +13,140 @@
 
   <mat-tab-group>
     <mat-tab label="Обучающиеся">
-      <div class="table learners-table">
-        <div *ngFor="let learner of learners"
-          [routerLink]="['/learners', learner.id]"
-          matRipple
-          class="table-row">
-          <div class="table-cell table-content learners-table-name">{{learner.name || '&nbsp;'}}</div>
-          <div class="table-cell table-content learners-table-actions">
-            <button (click)="$event.stopPropagation(); deleteLearner(learner)" mat-flat-button color="warn">Удалить</button>
+      <ng-template matTabContent>
+        <div class="table learners-table">
+          <div *ngFor="let learner of learners"
+            [routerLink]="['/learners', learner.id]"
+            matRipple
+            class="table-row">
+            <div class="table-cell table-content learners-table-name">{{learner.name || '&nbsp;'}}</div>
+            <div class="table-cell table-content learners-table-actions">
+              <button (click)="$event.stopPropagation(); deleteLearner(learner)" mat-flat-button color="warn">Удалить</button>
+            </div>
+          </div>
+          <div (click)="createLearner()"
+            matRipple
+            class="table-row table-footer">
+            <div class="table-cell table-content">
+              <mat-icon>add</mat-icon>
+              Добавить обучающегося
+            </div>
           </div>
         </div>
-        <div (click)="createLearner()"
-          matRipple
-          class="table-row table-footer">
-          <div class="table-cell table-content">
-            <mat-icon>add</mat-icon>
-            Добавить обучающегося
-          </div>
-        </div>
-      </div>
+      </ng-template>
     </mat-tab>
     <mat-tab label="Группы">
-      <div class="table groups-table">
-        <div *ngFor="let group of groups"
-          [routerLink]="['/groups', group.id]"
-          matRipple
-          class="table-row">
-          <div class="table-cell table-content groups-table-name">{{group.name || '&nbsp;'}}</div>
-          <div class="table-cell table-content groups-table-actions">
-            <button (click)="$event.stopPropagation(); deleteGroup(group)" mat-flat-button color="warn">Удалить</button>
+      <ng-template matTabContent>
+        <div class="table groups-table">
+          <div *ngFor="let group of groups"
+            [routerLink]="['/groups', group.id]"
+            matRipple
+            class="table-row">
+            <div class="table-cell table-content groups-table-name">{{group.name || '&nbsp;'}}</div>
+            <div class="table-cell table-content groups-table-actions">
+              <button (click)="$event.stopPropagation(); deleteGroup(group)" mat-flat-button color="warn">Удалить</button>
+            </div>
+          </div>
+          <div (click)="createGroup()"
+            matRipple
+            class="table-row table-footer">
+            <div class="table-cell table-content">
+              <mat-icon>add</mat-icon>
+              Добавить группу
+            </div>
           </div>
         </div>
-        <div (click)="createGroup()"
-          matRipple
-          class="table-row table-footer">
-          <div class="table-cell table-content">
-            <mat-icon>add</mat-icon>
-            Добавить группу
-          </div>
-        </div>
-      </div>
+      </ng-template>
     </mat-tab>
     <mat-tab label="Табель">
-      <form class="form">
-        <mat-form-field class="form-field">
-          <mat-label>Учебный год</mat-label>
-          <mat-select [(ngModel)]="year" name="year">
-            <mat-option value="19">19/20</mat-option>
-            <mat-option value="20">20/21</mat-option>
-            <mat-option value="21">21/22</mat-option>
-            <mat-option value="22">22/23</mat-option>
-            <mat-option value="23">23/24</mat-option>
-            <mat-option value="24">24/25</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field class="form-field">
-          <mat-label>Месяц</mat-label>
-          <mat-select [(ngModel)]="month" name="month">
-            <mat-option value="9">Сентябрь</mat-option>
-            <mat-option value="10">Октябрь</mat-option>
-            <mat-option value="11">Ноябрь</mat-option>
-            <mat-option value="12">Декабрь</mat-option>
-            <mat-option value="1">Январь</mat-option>
-            <mat-option value="2">Февраль</mat-option>
-            <mat-option value="3">Март</mat-option>
-            <mat-option value="4">Апрель</mat-option>
-            <mat-option value="5">Май</mat-option>
-            <mat-option value="6">Июнь</mat-option>
-            <mat-option value="7">Июль</mat-option>
-            <mat-option value="8">Август</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </form>
-
-      <div class="table journal-table">
-        <div class="table-row table-head">
-          <div class="table-cell table-content journal-table-name">ФИО</div>
-          <div *ngFor="let day of days" class="table-cell table-content journal-table-day">{{day}}</div>
-        </div>
-        <div *ngFor="let learner of learners" class="table-row">
-          <div class="table-cell table-content journal-table-name">{{learner.name || '&nbsp;'}}</div>
-          <div *ngFor="let day of days" class="table-cell table-content journal-table-day">
-            <mat-select [(ngModel)]="learner.attendance[year][month][day]" name="journal-month-{{learner.id}}-{{day}}"
-              panelClass="journal-select-panel">
-              <mat-option value=""></mat-option>
-              <mat-option value="+">+</mat-option>
-              <mat-option value="н">н</mat-option>
-              <mat-option value="б">б</mat-option>
-              <mat-option value="о">о</mat-option>
-              <mat-option value="с">с</mat-option>
-              <mat-option value="д">д</mat-option>
+      <ng-template matTabContent>
+        <form class="form">
+          <mat-form-field class="form-field">
+            <mat-label>Учебный год</mat-label>
+            <mat-select [(ngModel)]="year" name="year">
+              <mat-option value="19">19/20</mat-option>
+              <mat-option value="20">20/21</mat-option>
+              <mat-option value="21">21/22</mat-option>
+              <mat-option value="22">22/23</mat-option>
+              <mat-option value="23">23/24</mat-option>
+              <mat-option value="24">24/25</mat-option>
             </mat-select>
+          </mat-form-field>
+  
+          <mat-form-field class="form-field">
+            <mat-label>Месяц</mat-label>
+            <mat-select [(ngModel)]="month" name="month">
+              <mat-option value="9">Сентябрь</mat-option>
+              <mat-option value="10">Октябрь</mat-option>
+              <mat-option value="11">Ноябрь</mat-option>
+              <mat-option value="12">Декабрь</mat-option>
+              <mat-option value="1">Январь</mat-option>
+              <mat-option value="2">Февраль</mat-option>
+              <mat-option value="3">Март</mat-option>
+              <mat-option value="4">Апрель</mat-option>
+              <mat-option value="5">Май</mat-option>
+              <mat-option value="6">Июнь</mat-option>
+              <mat-option value="7">Июль</mat-option>
+              <mat-option value="8">Август</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </form>
+  
+        <div class="table journal-table">
+          <div class="table-row table-head">
+            <div class="table-cell table-content journal-table-name">ФИО</div>
+            <div *ngFor="let day of days" class="table-cell table-content journal-table-day">{{day}}</div>
+          </div>
+          <div *ngFor="let learner of learners" class="table-row">
+            <div class="table-cell table-content journal-table-name">{{learner.name || '&nbsp;'}}</div>
+            <div *ngFor="let day of days" class="table-cell table-content journal-table-day">
+              <mat-select [(ngModel)]="learner.attendance[year][month][day]" name="journal-month-{{learner.id}}-{{day}}"
+                panelClass="journal-select-panel">
+                <mat-option value=""></mat-option>
+                <mat-option value="+">+</mat-option>
+                <mat-option value="н">н</mat-option>
+                <mat-option value="б">б</mat-option>
+                <mat-option value="о">о</mat-option>
+                <mat-option value="с">с</mat-option>
+                <mat-option value="д">д</mat-option>
+              </mat-select>
+            </div>
           </div>
         </div>
-      </div>
+      </ng-template>
     </mat-tab>
     <mat-tab label="Сгенерировать журнал">
-      <form class="form">
-        <mat-form-field class="form-field">
-          <mat-label>Группа</mat-label>
-          <mat-select [(ngModel)]="groupId" name="groupId">
-            <mat-option *ngFor="let group of groups" [value]="group.id">{{group.name}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field class="form-field">
-          <mat-label>Учебный год</mat-label>
-          <mat-select [(ngModel)]="year" name="year">
-            <mat-option value="19">19/20</mat-option>
-            <mat-option value="20">20/21</mat-option>
-            <mat-option value="21">21/22</mat-option>
-            <mat-option value="22">22/23</mat-option>
-            <mat-option value="23">23/24</mat-option>
-            <mat-option value="24">24/25</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field class="form-field" style="width: 300px">
-          <mat-label>ФИО учителя</mat-label>
-          <input [(ngModel)]="teacherName"
-            matInput
-            name="name" />
-        </mat-form-field>
-
-        <button (click)="generateReport()" mat-flat-button color="primary" [disabled]="!groupId || !teacherName">Сгенерировать журнал</button>
-      </form>
+      <ng-template matTabContent>
+        <form class="form">
+          <mat-form-field class="form-field">
+            <mat-label>Группа</mat-label>
+            <mat-select [(ngModel)]="groupId" name="groupId">
+              <mat-option *ngFor="let group of groups" [value]="group.id">{{group.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+  
+          <mat-form-field class="form-field">
+            <mat-label>Учебный год</mat-label>
+            <mat-select [(ngModel)]="year" name="year">
+              <mat-option value="19">19/20</mat-option>
+              <mat-option value="20">20/21</mat-option>
+              <mat-option value="21">21/22</mat-option>
+              <mat-option value="22">22/23</mat-option>
+              <mat-option value="23">23/24</mat-option>
+              <mat-option value="24">24/25</mat-option>
+            </mat-select>
+          </mat-form-field>
+  
+          <mat-form-field class="form-field" style="width: 300px">
+            <mat-label>ФИО учителя</mat-label>
+            <input [(ngModel)]="teacherName"
+              matInput
+              name="name" />
+          </mat-form-field>
+  
+          <button (click)="generateReport()" mat-flat-button color="primary" [disabled]="!groupId || !teacherName">Сгенерировать журнал</button>
+        </form>
+      </ng-template>
     </mat-tab>
   </mat-tab-group>
 </div>
