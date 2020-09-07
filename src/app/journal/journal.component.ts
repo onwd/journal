@@ -110,7 +110,7 @@ export class JournalComponent {
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer]);
 
-    saveAs(blob, 'test.xlsx');
+    saveAs(blob, 'Журнал.xlsx');
   }
 
   private addSubjectsSheets(workbook: Workbook): void {
@@ -496,7 +496,7 @@ export class JournalComponent {
 
     const blob = new Blob([json], { type: 'application/json' });
 
-    saveAs(blob, 'journal.json');
+    saveAs(blob, 'journal-data.json');
   }
 
   public uploadJournal(): void {
