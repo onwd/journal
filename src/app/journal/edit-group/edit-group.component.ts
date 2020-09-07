@@ -79,6 +79,10 @@ export class JournalEditGroupPageComponent implements OnInit {
     this.group.learnersIds.push(event.option.value);
     this.addLearnerControl.setValue('');
     this.addLearnerInput.nativeElement.blur();
+
+    setTimeout(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    }, 0);
   }
 
   public getLearnerById(id: number): Learner {
