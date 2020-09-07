@@ -9,5 +9,24 @@ export class DataService {
   constructor() {
     this.learners = [];
     this.groups = [];
+
+    const json = localStorage.getItem('data');
+    if (json) {
+      try {
+        const data = JSON.parse(json);
+
+        this.learners = data.learners;
+        this.groups = data.groups;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    setInterval(() => {
+      localStorage.setItem('data', JSON.stringify({
+        learners: this.learners,
+        groups: this.groups
+      }));
+    }, 1000);
   }
 }
