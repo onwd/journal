@@ -1,11 +1,11 @@
-import { PublicJournalEditGroupPageComponent } from './edit-group.component';
+import { JournalEditGroupPageComponent } from './edit-group.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
     path: '',
-    component: PublicJournalEditGroupPageComponent
+    component: JournalEditGroupPageComponent
   }
 ];
 
@@ -13,4 +13,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class PublicJournalEditGroupPageRoutingModule { }
+export class JournalEditGroupPageRoutingModule { }

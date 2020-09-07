@@ -3,12 +3,12 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { DataService, Learner } from '@shared/data';
 
 @Component({
-  selector: 'public-journal-edit-learner-page',
+  selector: 'journal-edit-learner-page',
   templateUrl: 'edit-learner.html',
   styleUrls: ['edit-learner.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PublicJournalEditLearnerPageComponent implements OnInit {
+export class JournalEditLearnerPageComponent implements OnInit {
   public learner: Learner;
 
   constructor(

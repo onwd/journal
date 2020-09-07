@@ -19,12 +19,12 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'public-journal-edit-group-page',
+  selector: 'journal-edit-group-page',
   templateUrl: 'edit-group.html',
   styleUrls: ['edit-group.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PublicJournalEditGroupPageComponent implements OnInit {
+export class JournalEditGroupPageComponent implements OnInit {
   @ViewChild('addLearnerInput') addLearnerInput: ElementRef;
 
   public group: Group;
@@ -72,7 +72,7 @@ export class PublicJournalEditGroupPageComponent implements OnInit {
 
     this.subjects.push(subject);
 
-    this.router.navigate(['/journal/groups', this.group.id, 'subjects', subject.id]);
+    this.router.navigate(['/groups', this.group.id, 'subjects', subject.id]);
   }
 
   public onLearnerSelected(event: MatAutocompleteSelectedEvent): void {

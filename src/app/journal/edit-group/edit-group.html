@@ -17,7 +17,7 @@
       <div class="table-cell table-content">Предметы</div>
     </div>
     <div *ngFor="let subject of subjects"
-      [routerLink]="['/journal/groups', group.id, 'subjects', subject.id]"
+      [routerLink]="['/groups', group.id, 'subjects', subject.id]"
       matRipple
       class="table-row">
       <div class="table-cell table-content subjects-table-name">{{subject.name || '&nbsp;'}}</div>

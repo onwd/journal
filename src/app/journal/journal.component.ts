@@ -28,12 +28,12 @@ import { saveAs } from 'file-saver';
 import { Workbook } from 'exceljs';
 
 @Component({
-  selector: 'public-journal-page',
+  selector: 'app-journal-root',
   templateUrl: 'journal.html',
   styleUrls: ['journal.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PublicJournalPageComponent {
+export class JournalComponent {
   @ViewChild('uploadJournalFile') uploadJournalFile: ElementRef;
 
   public learners: Array<Learner>;
@@ -83,7 +83,7 @@ export class PublicJournalPageComponent {
 
     this.learners.push(learner);
 
-    this.router.navigate(['/journal/learners', learner.id]);
+    this.router.navigate(['/learners', learner.id]);
   }
 
   public createGroup(): void {
@@ -97,7 +97,7 @@ export class PublicJournalPageComponent {
 
     this.groups.push(group);
 
-    this.router.navigate(['/journal/groups', group.id]);
+    this.router.navigate(['/groups', group.id]);
   }
 
   public async generateReport(): Promise<void> {

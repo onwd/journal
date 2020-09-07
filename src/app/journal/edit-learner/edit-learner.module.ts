@@ -4,14 +4,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NgModule } from '@angular/core';
-import { PublicJournalEditLearnerPageComponent } from './edit-learner.component';
-import { PublicJournalEditLearnerPageRoutingModule } from './edit-learner.routing';
+import { JournalEditLearnerPageComponent } from './edit-learner.component';
+import { JournalEditLearnerPageRoutingModule } from './edit-learner.routing';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
-    PublicJournalEditLearnerPageComponent
+    JournalEditLearnerPageComponent
   ],
   imports: [
     CommonModule,
@@ -21,8 +21,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatToolbarModule,
     RouterModule,
     TranslateModule,
-    PublicJournalEditLearnerPageRoutingModule
+    JournalEditLearnerPageRoutingModule
   ],
   providers: []
 })
-export class PublicJournalEditLearnerPageModule { }
+export class JournalEditLearnerPageModule { }

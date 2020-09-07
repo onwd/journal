@@ -1,21 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { PublicJournalPageComponent } from './journal.component';
+import { JournalEditLearnerPageComponent } from './edit.component';
 
-describe('PublicJournalPageComponent', () => {
-  let component: PublicJournalPageComponent;
-  let fixture: ComponentFixture<PublicJournalPageComponent>;
+describe('JournalEditLearnerPageComponent', () => {
+  let component: JournalEditLearnerPageComponent;
+  let fixture: ComponentFixture<JournalEditLearnerPageComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        PublicJournalPageComponent
+        JournalEditLearnerPageComponent
       ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PublicJournalPageComponent);
+    fixture = TestBed.createComponent(JournalEditLearnerPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

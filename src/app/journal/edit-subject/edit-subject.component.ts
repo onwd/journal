@@ -9,12 +9,12 @@ import {
 import { last, range } from 'lodash';
 
 @Component({
-  selector: 'public-journal-edit-subject-page',
+  selector: 'journal-edit-subject-page',
   templateUrl: 'edit-subject.html',
   styleUrls: ['edit-subject.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PublicJournalEditSubjectPageComponent implements OnInit {
+export class JournalEditSubjectPageComponent implements OnInit {
   public group: Group;
   public subject: Subject;
   public lessons: Array<Lesson>;

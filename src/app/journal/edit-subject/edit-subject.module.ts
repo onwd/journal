@@ -8,14 +8,14 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NgModule } from '@angular/core';
-import { PublicJournalEditSubjectPageComponent } from './edit-subject.component';
-import { PublicJournalEditSubjectPageRoutingModule } from './edit-subject.routing';
+import { JournalEditSubjectPageComponent } from './edit-subject.component';
+import { JournalEditSubjectPageRoutingModule } from './edit-subject.routing';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
-    PublicJournalEditSubjectPageComponent
+    JournalEditSubjectPageComponent
   ],
   imports: [
     CommonModule,
@@ -29,8 +29,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatToolbarModule,
     RouterModule,
     TranslateModule,
-    PublicJournalEditSubjectPageRoutingModule
+    JournalEditSubjectPageRoutingModule
   ],
   providers: []
 })
-export class PublicJournalEditSubjectPageModule { }
+export class JournalEditSubjectPageModule { }

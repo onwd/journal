@@ -15,7 +15,7 @@
     <mat-tab label="Обучающиеся">
       <div class="table learners-table">
         <div *ngFor="let learner of learners"
-          [routerLink]="['/journal/learners', learner.id]"
+          [routerLink]="['/learners', learner.id]"
           matRipple
           class="table-row">
           <div class="table-cell table-content learners-table-name">{{learner.name || '&nbsp;'}}</div>
@@ -36,7 +36,7 @@
     <mat-tab label="Группы">
       <div class="table groups-table">
         <div *ngFor="let group of groups"
-          [routerLink]="['/journal/groups', group.id]"
+          [routerLink]="['/groups', group.id]"
           matRipple
           class="table-row">
           <div class="table-cell table-content groups-table-name">{{group.name || '&nbsp;'}}</div>
