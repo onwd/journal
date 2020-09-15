@@ -53,10 +53,10 @@
         </mat-select>
       </div>
       <div class="table-cell table-content lessons-table-topic">
-        <input [(ngModel)]="lesson.topic"
+        <textarea [(ngModel)]="lesson.topic"
           matInput
           name="lesson-topic-{{lesson.topic}}"
-          placeholder="Введите тему занятия" />
+          placeholder="Введите тему занятия"></textarea>
       </div>
       <div class="table-cell table-content lessons-table-hours">
         <input [(ngModel)]="lesson.hoursAndLessons"

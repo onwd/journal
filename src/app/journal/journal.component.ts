@@ -230,6 +230,7 @@ export class JournalComponent {
           sheet.getCell(3 + lessonIndex, 29).value = lessonIndex + 1;
           sheet.getCell(3 + lessonIndex, 30).value = `${padStart(lesson.day, 2, '0')}.${padStart(lesson.month, 2, '0')}`;
           sheet.getCell(3 + lessonIndex, 30).alignment = { horizontal: 'center' };
+          sheet.getCell(3 + lessonIndex, 31).alignment = { wrapText: true };
           sheet.getCell(3 + lessonIndex, 31).value = lesson.topic;
           sheet.getCell(3 + lessonIndex, 32).value = lesson.hoursAndLessons;
         });
