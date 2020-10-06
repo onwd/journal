@@ -72,7 +72,7 @@
               <mat-option value="24">24/25</mat-option>
             </mat-select>
           </mat-form-field>
-  
+
           <mat-form-field class="form-field">
             <mat-label>Месяц</mat-label>
             <mat-select [(ngModel)]="month" name="month">
@@ -91,7 +91,7 @@
             </mat-select>
           </mat-form-field>
         </form>
-  
+
         <div class="table journal-table">
           <div class="table-row table-head">
             <div class="table-cell table-content journal-table-name">ФИО</div>
@@ -119,13 +119,6 @@
       <ng-template matTabContent>
         <form class="form">
           <mat-form-field class="form-field">
-            <mat-label>Группа</mat-label>
-            <mat-select [(ngModel)]="groupId" name="groupId">
-              <mat-option *ngFor="let group of groups" [value]="group.id">{{group.name}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-  
-          <mat-form-field class="form-field">
             <mat-label>Учебный год</mat-label>
             <mat-select [(ngModel)]="year" name="year">
               <mat-option value="19">19/20</mat-option>
@@ -136,15 +129,21 @@
               <mat-option value="24">24/25</mat-option>
             </mat-select>
           </mat-form-field>
-  
+
           <mat-form-field class="form-field" style="width: 300px">
             <mat-label>ФИО учителя</mat-label>
             <input [(ngModel)]="teacherName"
               matInput
               name="name" />
           </mat-form-field>
-  
-          <button (click)="generateReport()" mat-flat-button color="primary" [disabled]="!groupId || !teacherName">Сгенерировать журнал</button>
+
+          <button (click)="sortLessonsByDate()" mat-flat-button color="accent">
+            Отсортировать занятия по дате
+          </button>
+
+          <button (click)="generateReport()" mat-flat-button color="primary" [disabled]="!teacherName">
+            Сгенерировать журнал
+          </button>
         </form>
       </ng-template>
     </mat-tab>

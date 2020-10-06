@@ -1,21 +1,21 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
-  ViewChild,
-  ChangeDetectorRef
+  ViewChild
 } from '@angular/core';
 import {
   chunk,
+  flatMap,
   flatten,
   groupBy,
   last,
+  orderBy,
   padStart,
   range,
-  without,
-  flatMap,
   uniqBy,
-  orderBy
+  without
 } from 'lodash';
 import {
   DataService,
@@ -23,6 +23,7 @@ import {
   Learner,
   Lesson
 } from '@shared/data';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { saveAs } from 'file-saver';
 import { Workbook } from 'exceljs';
@@ -40,7 +41,6 @@ export class JournalComponent {
   public groups: Array<Group>;
   public year: string;
   public month: string;
-  public groupId: number;
   public teacherName: string;
   public days: Array<number>;
   public uploadedJournalFile: File;
@@ -48,13 +48,13 @@ export class JournalComponent {
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
     private dataService: DataService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {
     this.learners = this.dataService.learners;
     this.groups = this.dataService.groups;
     this.year = '19';
     this.month = '9';
-    this.groupId = null;
     this.days = range(1, 31 + 1);
   }
 
@@ -114,144 +114,144 @@ export class JournalComponent {
   }
 
   private addSubjectsSheets(workbook: Workbook): void {
-    const group = this.groups.find((group) => group.id === Number(this.groupId));
+    this.groups.forEach((group, groupIndex) => {
+      group.subjects.forEach((subject, subjectIndex) => {
+        const lessons = subject.lessons.filter((lesson) => lesson.year === this.year);
+        const sheets = this.groupLessons(lessons, 25);
 
-    group.subjects.forEach((subject, subjectIndex) => {
-      const lessons = subject.lessons.filter((lesson) => lesson.year === this.year);
-      const sheets = this.groupLessons(lessons, 25);
+        sheets.forEach((lessonsMonthGroups, sheetIndex) => {
+          const sheetName = (sheets.length > 1)
+            ? `${groupIndex + 1}.${subjectIndex + 1}.${sheetIndex + 1}`
+            : `${groupIndex + 1}.${subjectIndex + 1}`
 
-      sheets.forEach((lessonsMonthGroups, sheetIndex) => {
-        const sheetName = (sheets.length > 1)
-          ? `${subjectIndex + 1}.${sheetIndex + 1}`
-          : `${subjectIndex + 1}`
+          const sheet = workbook.addWorksheet(sheetName);
 
-        const sheet = workbook.addWorksheet(sheetName);
+          sheet.properties.defaultColWidth = 2.75;
+          sheet.properties.defaultRowHeight = 15;
 
-        sheet.properties.defaultColWidth = 2.75;
-        sheet.properties.defaultRowHeight = 15;
+          // non-default rows and columns sizes
+          sheet.getRow(2).height = 54.75;
+          sheet.getRow(3).height = 31.5;
+          sheet.getColumn('B').width = 33.5;
+          sheet.getColumn('AD').width = 13;
+          sheet.getColumn('AE').width = 57;
+          sheet.getColumn('AF').width = 22;
 
-        // non-default rows and columns sizes
-        sheet.getRow(2).height = 54.75;
-        sheet.getRow(3).height = 31.5;
-        sheet.getColumn('B').width = 33.5;
-        sheet.getColumn('AD').width = 13;
-        sheet.getColumn('AE').width = 57;
-        sheet.getColumn('AF').width = 22;
+          // left table
+          sheet.mergeCells('A1', 'G1');
+          sheet.getCell('A1').value = `Группа: ${group.name}`;
 
-        // left table
-        sheet.mergeCells('A1', 'G1');
-        sheet.getCell('A1').value = `Группа: ${group.name}`;
+          sheet.mergeCells('H1', 'AA');
+          sheet.getCell('H1').value = `Наименование предмета: ${subject.name}`;
 
-        sheet.mergeCells('H1', 'AA');
-        sheet.getCell('H1').value = `Наименование предмета: ${subject.name}`;
+          sheet.mergeCells('A2', 'A3');
+          sheet.getCell('A2').value = '№ п/п';
+          sheet.getCell('A2').alignment = { textRotation: 90, horizontal: 'center' };
 
-        sheet.mergeCells('A2', 'A3');
-        sheet.getCell('A2').value = '№ п/п';
-        sheet.getCell('A2').alignment = { textRotation: 90, horizontal: 'center' };
+          sheet.getCell('B2').value = 'МЕСЯЦ';
+          sheet.getCell('B2').alignment = { horizontal: 'center', vertical: 'middle' };
 
-        sheet.getCell('B2').value = 'МЕСЯЦ';
-        sheet.getCell('B2').alignment = { horizontal: 'center', vertical: 'middle' };
+          sheet.getCell('B3').value = `                                           ЧИСЛО\r\nСписок обучающихся`;
+          sheet.getCell('B3').alignment = { vertical: 'top', wrapText: true };
 
-        sheet.getCell('B3').value = `                                           ЧИСЛО\r\nСписок обучающихся`;
-        sheet.getCell('B3').alignment = { vertical: 'top', wrapText: true };
+          const sheetLessons = flatten(lessonsMonthGroups);
 
-        const sheetLessons = flatten(lessonsMonthGroups);
+          let currentMonthGroupStartIndex = 0;
+          let currentMonthGroupEndIndex = 0;
+          lessonsMonthGroups.forEach((lessonMonthGroup) => {
+            currentMonthGroupEndIndex = currentMonthGroupStartIndex + lessonMonthGroup.length - 1;
 
-        let currentMonthGroupStartIndex = 0;
-        let currentMonthGroupEndIndex = 0;
-        lessonsMonthGroups.forEach((lessonMonthGroup) => {
-          currentMonthGroupEndIndex = currentMonthGroupStartIndex + lessonMonthGroup.length - 1;
+            sheet.mergeCells(
+              2, 3 + currentMonthGroupStartIndex,
+              2, 3 + currentMonthGroupEndIndex
+            );
 
-          sheet.mergeCells(
-            2, 3 + currentMonthGroupStartIndex,
-            2, 3 + currentMonthGroupEndIndex
-          );
+            sheet.getCell(2, 3 + currentMonthGroupStartIndex).value = this.getMonthText(lessonMonthGroup[0].month);
+            sheet.getCell(2, 3 + currentMonthGroupStartIndex).alignment = { textRotation: 90, horizontal: 'left' };
 
-          sheet.getCell(2, 3 + currentMonthGroupStartIndex).value = this.getMonthText(lessonMonthGroup[0].month);
-          sheet.getCell(2, 3 + currentMonthGroupStartIndex).alignment = { textRotation: 90, horizontal: 'left' };
-
-          currentMonthGroupStartIndex = currentMonthGroupEndIndex + 1;
-        });
-
-        sheetLessons.forEach((lesson, lessonIndex) => {
-          if (lesson === null) {
-            return;
-          }
-
-          sheet.getCell(3, 3 + lessonIndex).value = lesson.day;
-        });
-
-        group.learnersIds.forEach((learnerId, learnerIndex) => {
-          const learner = this.learners.find((learner) => learner.id === learnerId);
-
-          sheet.getCell(`A${4 + learnerIndex}`).value = learnerIndex + 1;
-          sheet.getCell(`B${4 + learnerIndex}`).value = learner.name;
+            currentMonthGroupStartIndex = currentMonthGroupEndIndex + 1;
+          });
 
           sheetLessons.forEach((lesson, lessonIndex) => {
             if (lesson === null) {
               return;
             }
 
-            sheet.getCell(4 + learnerIndex, 3 + lessonIndex).value = ['н', 'о', 'с', 'б', 'д'].includes(learner.attendance[lesson.year][lesson.month][lesson.day]) ? 'н' : '';
+            sheet.getCell(3, 3 + lessonIndex).value = lesson.day;
           });
-        });
 
-        for (const row of range(2, 3 + group.learnersIds.length + 1)) {
-          for (const column of range(1, 27 + 1)) {
-            sheet.getCell(row, column).border = {
-              top: { style:'thin' },
-              left: { style:'thin' },
-              bottom: { style:'thin' },
-              right: { style:'thin' }
-            };
+          group.learnersIds.forEach((learnerId, learnerIndex) => {
+            const learner = this.learners.find((learner) => learner.id === learnerId);
+
+            sheet.getCell(`A${4 + learnerIndex}`).value = learnerIndex + 1;
+            sheet.getCell(`B${4 + learnerIndex}`).value = learner.name;
+
+            sheetLessons.forEach((lesson, lessonIndex) => {
+              if (lesson === null) {
+                return;
+              }
+
+              sheet.getCell(4 + learnerIndex, 3 + lessonIndex).value = ['н', 'о', 'с', 'б', 'д'].includes(learner.attendance[lesson.year][lesson.month][lesson.day]) ? 'н' : '';
+            });
+          });
+
+          for (const row of range(2, 3 + group.learnersIds.length + 1)) {
+            for (const column of range(1, 27 + 1)) {
+              sheet.getCell(row, column).border = {
+                top: { style:'thin' },
+                left: { style:'thin' },
+                bottom: { style:'thin' },
+                right: { style:'thin' }
+              };
+            }
           }
-        }
 
-        sheet.getCell('B3').border = {
-          diagonal: { down: true, style: 'thin' },
-          top: { style:'thin' },
-          left: { style:'thin' },
-          bottom: { style:'thin' },
-          right: { style:'thin' }
-        };
+          sheet.getCell('B3').border = {
+            diagonal: { down: true, style: 'thin' },
+            top: { style:'thin' },
+            left: { style:'thin' },
+            bottom: { style:'thin' },
+            right: { style:'thin' }
+          };
 
-        // right table
-        sheet.mergeCells('AC1', 'AF1');
-        sheet.getCell('AC1').value = `ФИО учителя: ${this.teacherName}`;
+          // right table
+          sheet.mergeCells('AC1', 'AF1');
+          sheet.getCell('AC1').value = `ФИО учителя: ${this.teacherName}`;
 
-        sheet.getCell('AC2').value = '№';
-        sheet.getCell('AD2').value = 'Число/месяц';
-        sheet.getCell('AE2').value = 'Тема занятия';
-        sheet.getCell('AF2').value = 'Кол-во часов, занятий';
+          sheet.getCell('AC2').value = '№';
+          sheet.getCell('AD2').value = 'Число/месяц';
+          sheet.getCell('AE2').value = 'Тема занятия';
+          sheet.getCell('AF2').value = 'Кол-во часов, занятий';
 
-        const printableLessons = sheetLessons.filter((lesson) => lesson);
+          const printableLessons = sheetLessons.filter((lesson) => lesson);
 
-        printableLessons.forEach((lesson, lessonIndex) => {
-          sheet.getCell(3 + lessonIndex, 29).value = lessonIndex + 1;
-          sheet.getCell(3 + lessonIndex, 30).value = `${padStart(lesson.day, 2, '0')}.${padStart(lesson.month, 2, '0')}`;
-          sheet.getCell(3 + lessonIndex, 30).alignment = { horizontal: 'center' };
-          sheet.getCell(3 + lessonIndex, 31).alignment = { wrapText: true };
-          sheet.getCell(3 + lessonIndex, 31).value = lesson.topic;
-          sheet.getCell(3 + lessonIndex, 32).value = lesson.hoursAndLessons;
-        });
+          printableLessons.forEach((lesson, lessonIndex) => {
+            sheet.getCell(3 + lessonIndex, 29).value = lessonIndex + 1;
+            sheet.getCell(3 + lessonIndex, 30).value = `${padStart(lesson.day, 2, '0')}.${padStart(lesson.month, 2, '0')}`;
+            sheet.getCell(3 + lessonIndex, 30).alignment = { horizontal: 'center' };
+            sheet.getCell(3 + lessonIndex, 31).alignment = { wrapText: true };
+            sheet.getCell(3 + lessonIndex, 31).value = lesson.topic;
+            sheet.getCell(3 + lessonIndex, 32).value = lesson.hoursAndLessons;
+          });
 
-        for (const row of range(2, 2 + printableLessons.length + 1)) {
-          for (const column of range(29, 32 + 1)) {
-            sheet.getCell(row, column).border = {
-              top: { style:'thin' },
-              left: { style:'thin' },
-              bottom: { style:'thin' },
-              right: { style:'thin' }
-            };
+          for (const row of range(2, 2 + printableLessons.length + 1)) {
+            for (const column of range(29, 32 + 1)) {
+              sheet.getCell(row, column).border = {
+                top: { style:'thin' },
+                left: { style:'thin' },
+                bottom: { style:'thin' },
+                right: { style:'thin' }
+              };
+            }
           }
-        }
 
-        // Change font globally
-        sheet.eachRow((row) => {
-          row.font = { name: 'Times New Roman', family: 4, size: 11 };
+          // Change font globally
+          sheet.eachRow((row) => {
+            row.font = { name: 'Times New Roman', family: 4, size: 11 };
+          });
+
+          sheet.getRow(1).font = { name: 'Times New Roman', family: 4, size: 11, bold: true };
         });
-
-        sheet.getRow(1).font = { name: 'Times New Roman', family: 4, size: 11, bold: true };
       });
     });
   }
@@ -316,7 +316,7 @@ export class JournalComponent {
     let lessons = flatMap(subjects, (subject) => subject.lessons);
     lessons = lessons.filter((lesson) => lesson.year === this.year);
     lessons = uniqBy(lessons, (lesson) => `${lesson.year}-${lesson.month}-${lesson.day}`);
-    lessons = orderBy(lessons, (lesson) => `${lesson.year}-${this.getMonthOrder(lesson.month)}-${lesson.day}`);
+    lessons = orderBy(lessons, (lesson) => `${lesson.year}-${this.getMonthOrder(lesson.month)}-${padStart(lesson.day, 2, '0')}`);
 
     const sheets = this.groupLessons(lessons, 55);
 
@@ -467,6 +467,18 @@ export class JournalComponent {
       '11': '03',
       '12': '04'
     }[month];
+  }
+
+  public sortLessonsByDate(): void {
+    this.groups.forEach((group) => {
+      group.subjects.forEach((subject) => {
+        subject.lessons = orderBy(subject.lessons, (lesson) => `${lesson.year}-${this.getMonthOrder(lesson.month)}-${padStart(lesson.day, 2, '0')}`);
+      });
+    });
+
+    this.snackBar.open('Занятия отсортированы по дате', 'OK', {
+      duration: 5000
+    });
   }
 
   public deleteLearner(learner: Learner): void {
