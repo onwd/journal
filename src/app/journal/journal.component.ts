@@ -191,7 +191,9 @@ export class JournalComponent {
                 return;
               }
 
-              sheet.getCell(4 + learnerIndex, 3 + lessonIndex).value = ['н', 'о', 'с', 'б', 'д'].includes(learner.attendance[lesson.year][lesson.month][lesson.day]) ? 'н' : '';
+              const attendance = this.getLearnerLessonAttendance(learner, lesson);
+
+              sheet.getCell(4 + learnerIndex, 3 + lessonIndex).value = ['н', 'о', 'с', 'б', 'д'].includes(attendance) ? 'н' : '';
             });
           });
 
@@ -384,7 +386,9 @@ export class JournalComponent {
             return;
           }
 
-          sheet.getCell(4 + learnerIndex, 3 + lessonIndex).value = ['н', 'о', 'с', 'б', 'д'].includes(learner.attendance[lesson.year][lesson.month][lesson.day]) ? 'н' : '';
+          const attendance = this.getLearnerLessonAttendance(learner, lesson);
+
+          sheet.getCell(4 + learnerIndex, 3 + lessonIndex).value = ['н', 'о', 'с', 'б'].includes(attendance) ? attendance : '';
         });
       });
 
@@ -537,5 +541,9 @@ export class JournalComponent {
     };
 
     reader.readAsText(files.item(0));
+  }
+
+  private getLearnerLessonAttendance(learner: Learner, lesson: Lesson): string {
+    return learner.attendance[lesson.year][lesson.month][lesson.day];
   }
 }
