@@ -200,20 +200,20 @@ export class JournalComponent {
           for (const row of range(2, 3 + group.learnersIds.length + 1)) {
             for (const column of range(1, 27 + 1)) {
               sheet.getCell(row, column).border = {
-                top: { style:'thin' },
-                left: { style:'thin' },
-                bottom: { style:'thin' },
-                right: { style:'thin' }
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
               };
             }
           }
 
           sheet.getCell('B3').border = {
             diagonal: { down: true, style: 'thin' },
-            top: { style:'thin' },
-            left: { style:'thin' },
-            bottom: { style:'thin' },
-            right: { style:'thin' }
+            top: { style: 'thin' },
+            left: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' }
           };
 
           // right table
@@ -239,10 +239,10 @@ export class JournalComponent {
           for (const row of range(2, 2 + printableLessons.length + 1)) {
             for (const column of range(29, 32 + 1)) {
               sheet.getCell(row, column).border = {
-                top: { style:'thin' },
-                left: { style:'thin' },
-                bottom: { style:'thin' },
-                right: { style:'thin' }
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
               };
             }
           }
@@ -297,10 +297,10 @@ export class JournalComponent {
     for (const row of range(2, 2 + this.learners.length + 1)) {
       for (const column of range(1, 8 + 1)) {
         sheet.getCell(row, column).border = {
-          top: { style:'thin' },
-          left: { style:'thin' },
-          bottom: { style:'thin' },
-          right: { style:'thin' }
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
         };
       }
     }
@@ -395,20 +395,20 @@ export class JournalComponent {
       for (const row of range(2, 3 + this.learners.length + 1)) {
         for (const column of range(1, 57 + 1)) {
           sheet.getCell(row, column).border = {
-            top: { style:'thin' },
-            left: { style:'thin' },
-            bottom: { style:'thin' },
-            right: { style:'thin' }
+            top: { style: 'thin' },
+            left: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' }
           };
         }
       }
 
       sheet.getCell('B3').border = {
         diagonal: { down: true, style: 'thin' },
-        top: { style:'thin' },
-        left: { style:'thin' },
-        bottom: { style:'thin' },
-        right: { style:'thin' }
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' }
       };
 
       // Change font globally
