@@ -100,6 +100,17 @@ export class JournalComponent {
     this.router.navigate(['/groups', group.id]);
   }
 
+  public async generateJournal(): Promise<void> {
+    const workbook = new Workbook();
+
+    this.addJournalSheet(workbook);
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer]);
+
+    saveAs(blob, `Табель-20${this.year}.${padStart(this.month, 2, '0')}.xlsx`);
+  }
+
   public async generateReport(): Promise<void> {
     const workbook = new Workbook();
 
@@ -110,7 +121,7 @@ export class JournalComponent {
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer]);
 
-    saveAs(blob, 'Журнал.xlsx');
+    saveAs(blob, `Табель-20${this.year}.xlsx`);
   }
 
   private addSubjectsSheets(workbook: Workbook): void {
@@ -418,6 +429,198 @@ export class JournalComponent {
 
       sheet.getRow(1).font = { name: 'Times New Roman', family: 4, size: 14, bold: true };
     });
+  }
+
+  private addJournalSheet(workbook: Workbook): void {
+    const sheet = workbook.addWorksheet('Табель');
+
+    sheet.properties.defaultColWidth = 7;
+    sheet.properties.defaultRowHeight = 15;
+
+    // non-default rows and columns sizes
+    sheet.getRow(1).height = 29;
+    sheet.getColumn(1).width = 4;
+    sheet.getColumn(2).width = 33.5;
+
+    sheet.mergeCells('A1', 'A2');
+    sheet.getCell('A1').value = '№ п/п';
+    sheet.getCell('A1').alignment = { textRotation: 90, horizontal: 'center' };
+
+    sheet.mergeCells('B1', 'B2');
+    sheet.getCell('B1').value = 'Список обучающихся';
+    sheet.getCell('B1').alignment = { horizontal: 'center', vertical: 'middle' };
+
+    sheet.mergeCells('C1', 'AG1');
+    sheet.getCell('C1').value = 'Дата';
+    sheet.getCell('C1').alignment = { horizontal: 'center', vertical: 'middle' };
+
+    sheet.mergeCells('AH1', 'AI1');
+    sheet.getCell('AH1').value = 'Всего пропущено';
+    sheet.getCell('AH1').alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+
+    sheet.getCell('AH2').value = 'Н';
+    sheet.getCell('AH2').alignment = { horizontal: 'center', vertical: 'middle' };
+
+    sheet.getCell('AI2').value = 'Б';
+    sheet.getCell('AI2').alignment = { horizontal: 'center', vertical: 'middle' };
+
+    sheet.mergeCells('AJ1', 'AJ2');
+    sheet.getCell('AJ1').value = 'Дни посещения';
+    sheet.getCell('AJ1').alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+
+    for (let day = 1; day <= 31; day++) {
+      sheet.getCell(2, 2 + day).value = day;
+      sheet.getCell(2, 2 + day).alignment = { horizontal: 'center', vertical: 'middle' };
+    }
+
+    let totalN = 0;
+    let totalB = 0;
+    let totalPlus = 0;
+
+    this.learners.forEach((learner, learnerIndex) => {
+      sheet.getCell(3 + learnerIndex, 1).value = learnerIndex + 1;
+      sheet.getCell(3 + learnerIndex, 2).value = learner.name;
+
+      let totalLearnerN = 0;
+      let totalLearnerB = 0;
+      let totalLearnerPlus = 0;
+
+      for (let day = 1; day <= 31; day++) {
+        const attendance = learner.attendance[this.year][this.month][day];
+
+        sheet.getCell(3 + learnerIndex, 2 + day).value = attendance;
+        sheet.getCell(3 + learnerIndex, 2 + day).alignment = { horizontal: 'center', vertical: 'middle' };
+
+        if (['н', 'о', 'с', 'б'].includes(attendance)) {
+          totalLearnerN++;
+        }
+
+        if (attendance === 'б') {
+          totalLearnerB++;
+        }
+
+        if (['+', 'д'].includes(attendance)) {
+          totalLearnerPlus++;
+        }
+      }
+
+      totalN += totalLearnerN;
+      totalB += totalLearnerB;
+      totalPlus += totalLearnerPlus;
+
+      sheet.getCell(3 + learnerIndex, 34).value = totalLearnerN;
+      sheet.getCell(3 + learnerIndex, 34).alignment = { horizontal: 'center', vertical: 'middle' };
+
+      sheet.getCell(3 + learnerIndex, 35).value = totalLearnerB;
+      sheet.getCell(3 + learnerIndex, 35).alignment = { horizontal: 'center', vertical: 'middle' };
+
+      sheet.getCell(3 + learnerIndex, 36).value = totalLearnerPlus;
+      sheet.getCell(3 + learnerIndex, 36).alignment = { horizontal: 'center', vertical: 'middle' };
+    });
+
+    sheet.getCell(2 + this.learners.length + 2, 34).value = totalN;
+    sheet.getCell(2 + this.learners.length + 2, 34).alignment = { horizontal: 'center', vertical: 'middle' };
+
+    sheet.getCell(2 + this.learners.length + 2, 35).value = totalB;
+    sheet.getCell(2 + this.learners.length + 2, 35).alignment = { horizontal: 'center', vertical: 'middle' };
+
+    sheet.getCell(2 + this.learners.length + 1, 36).value = totalPlus;
+    sheet.getCell(2 + this.learners.length + 1, 36).alignment = { horizontal: 'center', vertical: 'middle' };
+
+    sheet.getCell(2 + this.learners.length + 1, 2).value = 'Посещения';
+    sheet.getCell(2 + this.learners.length + 2, 2).value = 'Пропуски';
+
+    for (let day = 1; day <= 31; day++) {
+      let totalDayN = 0;
+      let totalDayPlus = 0;
+
+      this.learners.forEach((learner) => {
+        const attendance = learner.attendance[this.year][this.month][day];
+
+        if (['н', 'о', 'с', 'б'].includes(attendance)) {
+          totalDayN++;
+        }
+
+        if (['+', 'д'].includes(attendance)) {
+          totalDayPlus++;
+        }
+      });
+
+      sheet.getCell(2 + this.learners.length + 1, 2 + day).value = totalDayPlus;
+      sheet.getCell(2 + this.learners.length + 1, 2 + day).alignment = { horizontal: 'center', vertical: 'middle' };
+
+      sheet.getCell(2 + this.learners.length + 2, 2 + day).value = totalDayN;
+      sheet.getCell(2 + this.learners.length + 2, 2 + day).alignment = { horizontal: 'center', vertical: 'middle' };
+    }
+
+    for (const row of range(1, 2 + this.learners.length + 2 + 1)) {
+      for (const column of range(1, 2 + 31 + 3 + 1)) {
+        sheet.getCell(row, column).border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
+        };
+      }
+    }
+
+    // set red background color
+    for (const row of range(1, 2 + this.learners.length + 2 + 1)) {
+      for (const column of range(2 + 31 + 1, 2 + 31 + 2 + 1)) {
+        sheet.getCell(row, column).fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFFFA08B' },
+          bgColor: { argb: 'FFFFA08B' }
+        };
+
+        sheet.getCell(row, column).fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFFFA08B' },
+          bgColor: { argb: 'FFFFA08B' }
+        };
+      }
+    }
+
+    for (const column of range(1, 2 + 31 + 3 + 1)) {
+      sheet.getCell(2 + this.learners.length + 2, column).fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFFFA08B' },
+        bgColor: { argb: 'FFFFA08B' }
+      };
+    }
+
+    // set green background color
+    for (const row of range(1, 2 + this.learners.length + 1 + 1)) {
+      sheet.getCell(row, 2 + 31 + 3).fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFD0D7A6' },
+        bgColor: { argb: 'FFD0D7A6' }
+      };
+    }
+
+    for (const column of range(1, 2 + 31 + 3 + 1)) {
+      sheet.getCell(2 + this.learners.length + 1, column).fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFD0D7A6' },
+        bgColor: { argb: 'FFD0D7A6' }
+      };
+    }
+
+    // Change font globally
+    sheet.eachRow((row) => {
+      row.font = { name: 'Times New Roman', family: 4, size: 11 };
+    });
+
+    sheet.getRow(2 + this.learners.length + 1).font = { name: 'Times New Roman', family: 4, size: 11, bold: true };
+    sheet.getRow(2 + this.learners.length + 2).font = { name: 'Times New Roman', family: 4, size: 11, bold: true };
+    sheet.getColumn(2 + 31 + 1).font = { name: 'Times New Roman', family: 4, size: 11, bold: true };
+    sheet.getColumn(2 + 31 + 2).font = { name: 'Times New Roman', family: 4, size: 11, bold: true };
+    sheet.getColumn(2 + 31 + 3).font = { name: 'Times New Roman', family: 4, size: 11, bold: true };
   }
 
   private groupLessons(lessons: Array<Lesson>, maxLessonsPerSheet: number): Array<Array<Array<Lesson>>> {
