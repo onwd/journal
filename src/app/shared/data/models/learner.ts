@@ -8,6 +8,10 @@ export class Learner {
   public parentsName: string;
   public parentsInfo: string;
   public attendance: { [year: string]: { [month: string]: { [day: string]: string } } };
+  public enrollmentYear: string;
+  public enrollmentMonth: string;
+  public dismissalYear: string;
+  public dismissalMonth: string;
 
   constructor(learner?: Partial<Learner>) {
     Object.assign(this, learner);

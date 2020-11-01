@@ -7,6 +7,8 @@ import {
 } from '@angular/core';
 import {
   chunk,
+  compact,
+  first,
   flatMap,
   flatten,
   groupBy,
@@ -191,14 +193,36 @@ export class JournalComponent {
             sheet.getCell(3, 3 + lessonIndex).value = lesson.day;
           });
 
-          group.learnersIds.forEach((learnerId, learnerIndex) => {
-            const learner = this.learners.find((learner) => learner.id === learnerId);
+          const firstLesson = first(sheetLessons);
+          const lastLesson = last(compact(sheetLessons));
 
+          let learners = group.learnersIds
+            .map((learnerId) => this.learners.find((learner) => learner.id === learnerId));
+
+          learners = this.filterLearnersByEnrollmentAndDismissal(
+            learners,
+            firstLesson.year,
+            firstLesson.month,
+            lastLesson.year,
+            lastLesson.month
+          );
+
+          learners.forEach((learner, learnerIndex) => {
             sheet.getCell(`A${4 + learnerIndex}`).value = learnerIndex + 1;
             sheet.getCell(`B${4 + learnerIndex}`).value = learner.name;
 
             sheetLessons.forEach((lesson, lessonIndex) => {
               if (lesson === null) {
+                return;
+              }
+
+              const isFirstLessonInMonth = lessonIndex === 0 || sheetLessons[lessonIndex - 1].month !== lesson.month;
+
+              const isDismissed = this.isLearnerDismissedOnMonth(learner, lesson.year, lesson.month) &&
+                isFirstLessonInMonth;
+
+              if (isDismissed) {
+                sheet.getCell(4 + learnerIndex, 3 + lessonIndex).value = 'в';
                 return;
               }
 
@@ -208,7 +232,7 @@ export class JournalComponent {
             });
           });
 
-          for (const row of range(2, 3 + group.learnersIds.length + 1)) {
+          for (const row of range(2, 3 + learners.length + 1)) {
             for (const column of range(1, 27 + 1)) {
               sheet.getCell(row, column).border = {
                 top: { style: 'thin' },
@@ -294,7 +318,15 @@ export class JournalComponent {
     sheet.getCell('G2').value = 'Место работы родителей, занимаемая должность, телефон';
     sheet.getCell('H2').value = 'Домашний адрес, тел.';
 
-    this.learners.forEach((learner, learnerIndex) => {
+    const learners = this.filterLearnersByEnrollmentAndDismissal(
+      this.learners,
+      this.year,
+      '9',
+      this.year,
+      '8'
+    );
+
+    learners.forEach((learner, learnerIndex) => {
       sheet.getCell(`A${3 + learnerIndex}`).value = learnerIndex + 1;
       sheet.getCell(`B${3 + learnerIndex}`).value = learner.personalFileNumber;
       sheet.getCell(`C${3 + learnerIndex}`).value = learner.name;
@@ -305,7 +337,7 @@ export class JournalComponent {
       sheet.getCell(`H${3 + learnerIndex}`).value = learner.address;
     });
 
-    for (const row of range(2, 2 + this.learners.length + 1)) {
+    for (const row of range(2, 2 + learners.length + 1)) {
       for (const column of range(1, 8 + 1)) {
         sheet.getCell(row, column).border = {
           top: { style: 'thin' },
@@ -388,12 +420,33 @@ export class JournalComponent {
         sheet.getCell(3, 3 + lessonIndex).value = lesson.day;
       });
 
-      this.learners.forEach((learner, learnerIndex) => {
+      const firstLesson = first(sheetLessons);
+      const lastLesson = last(compact(sheetLessons));
+
+      const learners = this.filterLearnersByEnrollmentAndDismissal(
+        this.learners,
+        firstLesson.year,
+        firstLesson.month,
+        lastLesson.year,
+        lastLesson.month
+      );
+
+      learners.forEach((learner, learnerIndex) => {
         sheet.getCell(`A${4 + learnerIndex}`).value = learnerIndex + 1;
         sheet.getCell(`B${4 + learnerIndex}`).value = learner.name;
 
         sheetLessons.forEach((lesson, lessonIndex) => {
           if (lesson === null) {
+            return;
+          }
+
+          const isFirstLessonInMonth = lessonIndex === 0 || sheetLessons[lessonIndex - 1].month !== lesson.month;
+
+          const isDismissed = this.isLearnerDismissedOnMonth(learner, lesson.year, lesson.month) &&
+            isFirstLessonInMonth;
+
+          if (isDismissed) {
+            sheet.getCell(4 + learnerIndex, 3 + lessonIndex).value = 'в';
             return;
           }
 
@@ -403,7 +456,7 @@ export class JournalComponent {
         });
       });
 
-      for (const row of range(2, 3 + this.learners.length + 1)) {
+      for (const row of range(2, 3 + learners.length + 1)) {
         for (const column of range(1, 57 + 1)) {
           sheet.getCell(row, column).border = {
             top: { style: 'thin' },
@@ -477,7 +530,15 @@ export class JournalComponent {
     let totalB = 0;
     let totalPlus = 0;
 
-    this.learners.forEach((learner, learnerIndex) => {
+    const learners = this.filterLearnersByEnrollmentAndDismissal(
+      this.learners,
+      this.year,
+      this.month,
+      this.year,
+      this.month
+    );
+
+    learners.forEach((learner, learnerIndex) => {
       sheet.getCell(3 + learnerIndex, 1).value = learnerIndex + 1;
       sheet.getCell(3 + learnerIndex, 2).value = learner.name;
 
@@ -518,23 +579,23 @@ export class JournalComponent {
       sheet.getCell(3 + learnerIndex, 36).alignment = { horizontal: 'center', vertical: 'middle' };
     });
 
-    sheet.getCell(2 + this.learners.length + 2, 34).value = totalN;
-    sheet.getCell(2 + this.learners.length + 2, 34).alignment = { horizontal: 'center', vertical: 'middle' };
+    sheet.getCell(2 + learners.length + 2, 34).value = totalN;
+    sheet.getCell(2 + learners.length + 2, 34).alignment = { horizontal: 'center', vertical: 'middle' };
 
-    sheet.getCell(2 + this.learners.length + 2, 35).value = totalB;
-    sheet.getCell(2 + this.learners.length + 2, 35).alignment = { horizontal: 'center', vertical: 'middle' };
+    sheet.getCell(2 + learners.length + 2, 35).value = totalB;
+    sheet.getCell(2 + learners.length + 2, 35).alignment = { horizontal: 'center', vertical: 'middle' };
 
-    sheet.getCell(2 + this.learners.length + 1, 36).value = totalPlus;
-    sheet.getCell(2 + this.learners.length + 1, 36).alignment = { horizontal: 'center', vertical: 'middle' };
+    sheet.getCell(2 + learners.length + 1, 36).value = totalPlus;
+    sheet.getCell(2 + learners.length + 1, 36).alignment = { horizontal: 'center', vertical: 'middle' };
 
-    sheet.getCell(2 + this.learners.length + 1, 2).value = 'Посещения';
-    sheet.getCell(2 + this.learners.length + 2, 2).value = 'Пропуски';
+    sheet.getCell(2 + learners.length + 1, 2).value = 'Посещения';
+    sheet.getCell(2 + learners.length + 2, 2).value = 'Пропуски';
 
     for (let day = 1; day <= 31; day++) {
       let totalDayN = 0;
       let totalDayPlus = 0;
 
-      this.learners.forEach((learner) => {
+      learners.forEach((learner) => {
         const attendance = learner.attendance[this.year][this.month][day];
 
         if (['н', 'о', 'с', 'б'].includes(attendance)) {
@@ -546,14 +607,14 @@ export class JournalComponent {
         }
       });
 
-      sheet.getCell(2 + this.learners.length + 1, 2 + day).value = totalDayPlus;
-      sheet.getCell(2 + this.learners.length + 1, 2 + day).alignment = { horizontal: 'center', vertical: 'middle' };
+      sheet.getCell(2 + learners.length + 1, 2 + day).value = totalDayPlus;
+      sheet.getCell(2 + learners.length + 1, 2 + day).alignment = { horizontal: 'center', vertical: 'middle' };
 
-      sheet.getCell(2 + this.learners.length + 2, 2 + day).value = totalDayN;
-      sheet.getCell(2 + this.learners.length + 2, 2 + day).alignment = { horizontal: 'center', vertical: 'middle' };
+      sheet.getCell(2 + learners.length + 2, 2 + day).value = totalDayN;
+      sheet.getCell(2 + learners.length + 2, 2 + day).alignment = { horizontal: 'center', vertical: 'middle' };
     }
 
-    for (const row of range(1, 2 + this.learners.length + 2 + 1)) {
+    for (const row of range(1, 2 + learners.length + 2 + 1)) {
       for (const column of range(1, 2 + 31 + 3 + 1)) {
         sheet.getCell(row, column).border = {
           top: { style: 'thin' },
@@ -565,7 +626,7 @@ export class JournalComponent {
     }
 
     // set red background color
-    for (const row of range(1, 2 + this.learners.length + 2 + 1)) {
+    for (const row of range(1, 2 + learners.length + 2 + 1)) {
       for (const column of range(2 + 31 + 1, 2 + 31 + 2 + 1)) {
         sheet.getCell(row, column).fill = {
           type: 'pattern',
@@ -584,7 +645,7 @@ export class JournalComponent {
     }
 
     for (const column of range(1, 2 + 31 + 3 + 1)) {
-      sheet.getCell(2 + this.learners.length + 2, column).fill = {
+      sheet.getCell(2 + learners.length + 2, column).fill = {
         type: 'pattern',
         pattern: 'solid',
         fgColor: { argb: 'FFFFA08B' },
@@ -593,7 +654,7 @@ export class JournalComponent {
     }
 
     // set green background color
-    for (const row of range(1, 2 + this.learners.length + 1 + 1)) {
+    for (const row of range(1, 2 + learners.length + 1 + 1)) {
       sheet.getCell(row, 2 + 31 + 3).fill = {
         type: 'pattern',
         pattern: 'solid',
@@ -603,7 +664,7 @@ export class JournalComponent {
     }
 
     for (const column of range(1, 2 + 31 + 3 + 1)) {
-      sheet.getCell(2 + this.learners.length + 1, column).fill = {
+      sheet.getCell(2 + learners.length + 1, column).fill = {
         type: 'pattern',
         pattern: 'solid',
         fgColor: { argb: 'FFD0D7A6' },
@@ -616,8 +677,8 @@ export class JournalComponent {
       row.font = { name: 'Times New Roman', family: 4, size: 11 };
     });
 
-    sheet.getRow(2 + this.learners.length + 1).font = { name: 'Times New Roman', family: 4, size: 11, bold: true };
-    sheet.getRow(2 + this.learners.length + 2).font = { name: 'Times New Roman', family: 4, size: 11, bold: true };
+    sheet.getRow(2 + learners.length + 1).font = { name: 'Times New Roman', family: 4, size: 11, bold: true };
+    sheet.getRow(2 + learners.length + 2).font = { name: 'Times New Roman', family: 4, size: 11, bold: true };
     sheet.getColumn(2 + 31 + 1).font = { name: 'Times New Roman', family: 4, size: 11, bold: true };
     sheet.getColumn(2 + 31 + 2).font = { name: 'Times New Roman', family: 4, size: 11, bold: true };
     sheet.getColumn(2 + 31 + 3).font = { name: 'Times New Roman', family: 4, size: 11, bold: true };
@@ -748,5 +809,44 @@ export class JournalComponent {
 
   private getLearnerLessonAttendance(learner: Learner, lesson: Lesson): string {
     return learner.attendance[lesson.year][lesson.month][lesson.day];
+  }
+
+  private isLearnerDismissedOnMonth(learner: Learner, year: string, month: string): boolean {
+    return learner.dismissalYear === year && learner.dismissalMonth === month;
+  }
+
+  private isLearnerEnrolledAfterMonth(learner: Learner, year: string, month: string): boolean {
+    return !!learner.enrollmentYear && !!learner.enrollmentMonth &&
+      (
+        learner.enrollmentYear > year ||
+        (
+          learner.enrollmentYear === year &&
+          this.getMonthOrder(learner.enrollmentMonth) > this.getMonthOrder(month)
+        )
+      );
+  }
+
+  private isLearnerDismissedBeforeMonth(learner: Learner, year: string, month: string): boolean {
+    return !!learner.dismissalYear && !!learner.dismissalMonth &&
+      (
+        learner.dismissalYear < year ||
+        (
+          learner.dismissalYear === year &&
+          this.getMonthOrder(learner.dismissalMonth) < this.getMonthOrder(month)
+        )
+      );
+  }
+
+  private filterLearnersByEnrollmentAndDismissal(
+    learners: Array<Learner>,
+    startYear: string,
+    startMonth: string,
+    endYear: string,
+    endMonth: string
+  ): Array<Learner> {
+    return learners.filter((learner) => {
+      return !this.isLearnerDismissedBeforeMonth(learner, startYear, startMonth) &&
+        !this.isLearnerEnrolledAfterMonth(learner, endYear, endMonth);
+    });
   }
 }

@@ -53,6 +53,70 @@
         matInput
         name="parentsInfo"></textarea>
     </mat-form-field>
+
+    <mat-form-field class="form-field">
+      <mat-label>Год зачисления</mat-label>
+      <mat-select [(ngModel)]="learner.enrollmentYear" name="enrollmentYear">
+        <mat-option [value]="null">Не указан</mat-option>
+        <mat-option value="19">19/20</mat-option>
+        <mat-option value="20">20/21</mat-option>
+        <mat-option value="21">21/22</mat-option>
+        <mat-option value="22">22/23</mat-option>
+        <mat-option value="23">23/24</mat-option>
+        <mat-option value="24">24/25</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="form-field">
+      <mat-label>Месяц зачисления</mat-label>
+      <mat-select [(ngModel)]="learner.enrollmentMonth" name="enrollmentMonth">
+        <mat-option [value]="null">Не указан</mat-option>
+        <mat-option value="9">Сентябрь</mat-option>
+        <mat-option value="10">Октябрь</mat-option>
+        <mat-option value="11">Ноябрь</mat-option>
+        <mat-option value="12">Декабрь</mat-option>
+        <mat-option value="1">Январь</mat-option>
+        <mat-option value="2">Февраль</mat-option>
+        <mat-option value="3">Март</mat-option>
+        <mat-option value="4">Апрель</mat-option>
+        <mat-option value="5">Май</mat-option>
+        <mat-option value="6">Июнь</mat-option>
+        <mat-option value="7">Июль</mat-option>
+        <mat-option value="8">Август</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="form-field">
+      <mat-label>Год отчисления</mat-label>
+      <mat-select [(ngModel)]="learner.dismissalYear" name="dismissalYear">
+        <mat-option [value]="null">Не указан</mat-option>
+        <mat-option value="19">19/20</mat-option>
+        <mat-option value="20">20/21</mat-option>
+        <mat-option value="21">21/22</mat-option>
+        <mat-option value="22">22/23</mat-option>
+        <mat-option value="23">23/24</mat-option>
+        <mat-option value="24">24/25</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="form-field">
+      <mat-label>Месяц отчисления</mat-label>
+      <mat-select [(ngModel)]="learner.dismissalMonth" name="dismissalMonth">
+        <mat-option [value]="null">Не указан</mat-option>
+        <mat-option value="9">Сентябрь</mat-option>
+        <mat-option value="10">Октябрь</mat-option>
+        <mat-option value="11">Ноябрь</mat-option>
+        <mat-option value="12">Декабрь</mat-option>
+        <mat-option value="1">Январь</mat-option>
+        <mat-option value="2">Февраль</mat-option>
+        <mat-option value="3">Март</mat-option>
+        <mat-option value="4">Апрель</mat-option>
+        <mat-option value="5">Май</mat-option>
+        <mat-option value="6">Июнь</mat-option>
+        <mat-option value="7">Июль</mat-option>
+        <mat-option value="8">Август</mat-option>
+      </mat-select>
+    </mat-form-field>
   </form>
 </div>
 
