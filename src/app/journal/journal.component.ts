@@ -121,7 +121,7 @@ export class JournalComponent {
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer]);
 
-    saveAs(blob, `Табель-20${this.year}.xlsx`);
+    saveAs(blob, `Журнал-20${this.year}.xlsx`);
   }
 
   private addSubjectsSheets(workbook: Workbook): void {
