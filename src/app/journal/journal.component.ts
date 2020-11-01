@@ -861,15 +861,15 @@ export class JournalComponent {
       group.subjects.forEach((subject) => {
         subject.lessons.forEach((lesson) => {
           if (!lesson.year) {
-            errors.push(`${group.name}\n→ ${subject.name}\n→ ${lesson.topic}\n→ Год занятия не заполнен`);
+            errors.push(`Год занятия не заполнен\n→ ${group.name}\n→ ${subject.name}\n→ ${lesson.topic}`);
           }
 
           if (!lesson.month) {
-            errors.push(`${group.name}\n→ ${subject.name}\n→ ${lesson.topic}\n→ Месяц занятия не заполнен`);
+            errors.push(`Месяц занятия не заполнен\n→ ${group.name}\n→ ${subject.name}\n→ ${lesson.topic}`);
           }
 
           if (!lesson.day) {
-            errors.push(`${group.name}\n→ ${subject.name}\n→ ${lesson.topic}\n→ День занятия не заполнен`);
+            errors.push(`День занятия не заполнен\n→ ${group.name}\n→ ${subject.name}\n→ ${lesson.topic}`);
           }
         });
       });
