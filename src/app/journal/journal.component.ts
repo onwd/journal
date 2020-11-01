@@ -114,6 +114,10 @@ export class JournalComponent {
   }
 
   public async generateReport(): Promise<void> {
+    if (!this.validateBeforeGeneratingReport()) {
+      return;
+    }
+
     const workbook = new Workbook();
 
     this.addSubjectsSheets(workbook);
@@ -848,5 +852,37 @@ export class JournalComponent {
       return !this.isLearnerDismissedBeforeMonth(learner, startYear, startMonth) &&
         !this.isLearnerEnrolledAfterMonth(learner, endYear, endMonth);
     });
+  }
+
+  private validateBeforeGeneratingReport(): boolean {
+    const errors = [];
+
+    this.groups.forEach((group) => {
+      group.subjects.forEach((subject) => {
+        subject.lessons.forEach((lesson) => {
+          if (!lesson.year) {
+            errors.push(`${group.name}\n→ ${subject.name}\n→ ${lesson.topic}\n→ Год занятия не заполнен`);
+          }
+
+          if (!lesson.month) {
+            errors.push(`${group.name}\n→ ${subject.name}\n→ ${lesson.topic}\n→ Месяц занятия не заполнен`);
+          }
+
+          if (!lesson.day) {
+            errors.push(`${group.name}\n→ ${subject.name}\n→ ${lesson.topic}\n→ День занятия не заполнен`);
+          }
+        });
+      });
+    });
+
+    if (errors.length > 0) {
+      this.snackBar.open(`Невозможно сгенерировать отчет из-за ошибок:\n\n${errors.join('\n\n')}`, 'OK', {
+        panelClass: ['app-snackbar']
+      });
+
+      return false;
+    }
+
+    return true;
   }
 }
