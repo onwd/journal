@@ -143,16 +143,16 @@ export class JournalComponent {
 
           const sheet = workbook.addWorksheet(sheetName);
 
-          sheet.properties.defaultColWidth = 2.75;
+          sheet.properties.defaultColWidth = 4;
           sheet.properties.defaultRowHeight = 15;
 
           // non-default rows and columns sizes
-          sheet.getRow(2).height = 54.75;
-          sheet.getRow(3).height = 31.5;
-          sheet.getColumn('B').width = 33.5;
-          sheet.getColumn('AD').width = 13;
+          sheet.getRow(2).height = 74.25;
+          sheet.getRow(3).height = 38;
+          sheet.getColumn('B').width = 41;
+          sheet.getColumn('AD').width = 16;
           sheet.getColumn('AE').width = 57;
-          sheet.getColumn('AF').width = 22;
+          sheet.getColumn('AF').width = 27;
 
           // left table
           sheet.mergeCells('A1', 'G1');
@@ -288,10 +288,10 @@ export class JournalComponent {
 
           // Change font globally
           sheet.eachRow((row) => {
-            row.font = { name: 'Times New Roman', family: 4, size: 11 };
+            row.font = { name: 'Times New Roman', family: 4, size: 14 };
           });
 
-          sheet.getRow(1).font = { name: 'Times New Roman', family: 4, size: 11, bold: true };
+          sheet.getRow(1).font = { name: 'Times New Roman', family: 4, size: 14, bold: true };
         });
       });
     });
@@ -300,13 +300,13 @@ export class JournalComponent {
   private addLearnersInfoSheet(workbook: Workbook): void {
     const sheet = workbook.addWorksheet('Общие сведения об обучающихся');
 
-    sheet.getColumn(1).width = 2.88;
-    sheet.getColumn(2).width = 13;
+    sheet.getColumn(1).width = 4;
+    sheet.getColumn(2).width = 15;
     sheet.getColumn(3).width = 30;
-    sheet.getColumn(4).width = 5;
-    sheet.getColumn(5).width = 16;
+    sheet.getColumn(4).width = 6;
+    sheet.getColumn(5).width = 19;
     sheet.getColumn(6).width = 30;
-    sheet.getColumn(7).width = 60;
+    sheet.getColumn(7).width = 69;
     sheet.getColumn(8).width = 30;
 
     sheet.mergeCells('A1', 'H1');
@@ -354,7 +354,7 @@ export class JournalComponent {
 
     // Change font globally
     sheet.eachRow((row) => {
-      row.font = { name: 'Times New Roman', family: 4, size: 11 };
+      row.font = { name: 'Times New Roman', family: 4, size: 14 };
     });
 
     sheet.getRow(1).font = { name: 'Times New Roman', family: 4, size: 14, bold: true };
@@ -376,13 +376,13 @@ export class JournalComponent {
 
       const sheet = workbook.addWorksheet(sheetName);
 
-      sheet.properties.defaultColWidth = 2.75;
+      sheet.properties.defaultColWidth = 4;
       sheet.properties.defaultRowHeight = 15;
 
       // non-default rows and columns sizes
-      sheet.getRow(2).height = 54.75;
-      sheet.getRow(3).height = 31.5;
-      sheet.getColumn('B').width = 33.5;
+      sheet.getRow(2).height = 74.25;
+      sheet.getRow(3).height = 38;
+      sheet.getColumn('B').width = 41;
 
       sheet.mergeCells('A1', 'BE1');
       sheet.getCell('A1').value = `Сведения о количестве уроков, пропущенных обучающимися`;
@@ -481,7 +481,7 @@ export class JournalComponent {
 
       // Change font globally
       sheet.eachRow((row) => {
-        row.font = { name: 'Times New Roman', family: 4, size: 11 };
+        row.font = { name: 'Times New Roman', family: 4, size: 14 };
       });
 
       sheet.getRow(1).font = { name: 'Times New Roman', family: 4, size: 14, bold: true };
@@ -678,14 +678,14 @@ export class JournalComponent {
 
     // Change font globally
     sheet.eachRow((row) => {
-      row.font = { name: 'Times New Roman', family: 4, size: 11 };
+      row.font = { name: 'Times New Roman', family: 4, size: 14 };
     });
 
-    sheet.getRow(2 + learners.length + 1).font = { name: 'Times New Roman', family: 4, size: 11, bold: true };
-    sheet.getRow(2 + learners.length + 2).font = { name: 'Times New Roman', family: 4, size: 11, bold: true };
-    sheet.getColumn(2 + 31 + 1).font = { name: 'Times New Roman', family: 4, size: 11, bold: true };
-    sheet.getColumn(2 + 31 + 2).font = { name: 'Times New Roman', family: 4, size: 11, bold: true };
-    sheet.getColumn(2 + 31 + 3).font = { name: 'Times New Roman', family: 4, size: 11, bold: true };
+    sheet.getRow(2 + learners.length + 1).font = { name: 'Times New Roman', family: 4, size: 14, bold: true };
+    sheet.getRow(2 + learners.length + 2).font = { name: 'Times New Roman', family: 4, size: 14, bold: true };
+    sheet.getColumn(2 + 31 + 1).font = { name: 'Times New Roman', family: 4, size: 14, bold: true };
+    sheet.getColumn(2 + 31 + 2).font = { name: 'Times New Roman', family: 4, size: 14, bold: true };
+    sheet.getColumn(2 + 31 + 3).font = { name: 'Times New Roman', family: 4, size: 14, bold: true };
   }
 
   private groupLessons(lessons: Array<Lesson>, maxLessonsPerSheet: number): Array<Array<Array<Lesson>>> {
@@ -724,7 +724,7 @@ export class JournalComponent {
     }[month];
   }
 
-  private getMonthOrder(month: string): number {
+  private getMonthOrder(month: string): string {
     return {
       '1': '05',
       '2': '06',
