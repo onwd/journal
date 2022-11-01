@@ -153,6 +153,7 @@ export class JournalComponent {
           sheet.getColumn('AD').width = 16;
           sheet.getColumn('AE').width = 57;
           sheet.getColumn('AF').width = 27;
+          sheet.getColumn('AG').width = 11;
 
           // left table
           sheet.mergeCells('A1', 'G1');
@@ -263,6 +264,7 @@ export class JournalComponent {
           sheet.getCell('AD2').value = 'Число/месяц';
           sheet.getCell('AE2').value = 'Тема занятия';
           sheet.getCell('AF2').value = 'Кол-во часов, занятий';
+          sheet.getCell('AG2').value = 'Подпись';
 
           const printableLessons = sheetLessons.filter((lesson) => lesson);
 
@@ -276,7 +278,7 @@ export class JournalComponent {
           });
 
           for (const row of range(2, 2 + printableLessons.length + 1)) {
-            for (const column of range(29, 32 + 1)) {
+            for (const column of range(29, 33 + 1)) {
               sheet.getCell(row, column).border = {
                 top: { style: 'thin' },
                 left: { style: 'thin' },
